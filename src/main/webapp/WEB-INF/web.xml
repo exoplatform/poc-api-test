@@ -3,7 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-     SWAGGER
     <servlet>
         <servlet-name>DefaultJaxrsConfig</servlet-name>
         <servlet-class>com.wordnik.swagger.jaxrs.config.DefaultJaxrsConfig</servlet-class>
@@ -13,11 +12,11 @@
         </init-param>
         <init-param>
             <param-name>swagger.api.title</param-name>
-            <param-value>BCH User service</param-value>
+            <param-value>eXo Plateform REST API</param-value>
         </init-param>
         <init-param>
             <param-name>swagger.api.basepath</param-name>
-            <param-value>http://localhost:8080/</param-value>
+            <param-value>http://localhost:8080/api</param-value>
         </init-param>
         <init-param>
             <param-name>swagger.pretty.print</param-name>
@@ -30,5 +29,4 @@
         <servlet-class>org.exoplatform.bch.swagger.Bootstrap</servlet-class>
         <load-on-startup>2</load-on-startup>
     </servlet>
-
 </web-app>

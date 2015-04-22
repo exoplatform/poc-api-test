@@ -18,8 +18,8 @@ public class Bootstrap extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         Info info = new Info()
-                .title("BCH User service")
-                .description("This is a sample server for BCH User services")
+                .title("eXo REST API")
+                .description("Here is a documentation (and a way to test) eXo Platform REST API")
                 .termsOfService("http://localhost:8080/terms/")
                 .contact(new Contact()
                         .email("bdechateauvieux@exoplatform.org"))
@@ -29,15 +29,9 @@ public class Bootstrap extends HttpServlet {
 
         ServletContext context = config.getServletContext();
         Swagger swagger = new Swagger().info(info);
-        swagger.securityDefinition("api_key", new ApiKeyAuthDefinition("api_key", In.HEADER));
-        swagger.securityDefinition("bch_auth",
-                new OAuth2Definition()
-                        .implicit("http://localhost/api/oauth/dialog")
-                        .scope("read:users", "read your users")
-                        .scope("write:users", "modify users in your account"));
         swagger.tag(new Tag()
-                .name("user")
-                .description("Operations about user")
+                .name("activity")
+                .description("Operations about Activities on eXo Platform")
                 .externalDocs(new ExternalDocs("Find out more about the service", "http://exoplatform.org")));
 
         context.setAttribute("swagger", swagger);

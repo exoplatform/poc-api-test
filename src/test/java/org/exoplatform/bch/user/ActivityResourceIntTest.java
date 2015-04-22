@@ -1,7 +1,9 @@
 package org.exoplatform.bch.user;
 
 import org.eclipse.jetty.server.Server;
-import org.exoplatform.bch.user.client.retrofit.UserServiceClient;
+import org.exoplatform.bch.activity.Activity;
+import org.exoplatform.bch.activity.ActivityResource;
+import org.exoplatform.bch.user.client.retrofit.ActivityResourceClient;
 import org.glassfish.jersey.jetty.JettyHttpContainerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.junit.After;
@@ -18,14 +20,14 @@ import static org.junit.Assert.assertThat;
 /**
  * Created by bdechateauvieux on 4/21/15.
  */
-public class UserResourceIntTest {
+public class ActivityResourceIntTest {
 
     private Server server;
 
     @Before
     public void startServer() throws Exception {
         URI baseUri = UriBuilder.fromUri("http://localhost/").port(8080).build();
-        ResourceConfig config = new ResourceConfig(UserResource.class);
+        ResourceConfig config = new ResourceConfig(ActivityResource.class);
         server = JettyHttpContainerFactory.createServer(baseUri, config);
     }
 
@@ -38,10 +40,10 @@ public class UserResourceIntTest {
                 .setEndpoint("http://localhost:8080")
                 .build();
 
-        UserServiceClient service = restAdapter.create(UserServiceClient.class);
-        User user = service.getUser(0);
+        ActivityResourceClient service = restAdapter.create(ActivityResourceClient.class);
+        Activity activity = service.getActivity(0);
         //Then
-        assertThat(user.getName(), is("BCH"));
+        assertThat(activity.getTitle(), is("RDBMS Guidelines has been modified on wiki by Benoit"));
     }
 
     @After
