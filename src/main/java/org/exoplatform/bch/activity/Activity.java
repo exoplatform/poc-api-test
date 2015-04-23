@@ -12,6 +12,12 @@ public class Activity {
         this.title = title;
     }
 
+    public Activity(String title) {
+        this.title = title;
+    }
+
+    public Activity() {}
+
     public long getId() {
         return id;
     }

@@ -1,9 +1,12 @@
 package org.exoplatform.bch.activity;
 
 import com.wordnik.swagger.annotations.*;
+import org.exoplatform.bch.stream.StreamStorage;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.util.Random;
+import java.util.UUID;
 
 /**
  * Created by bdechateauvieux on 4/21/15.
@@ -31,11 +34,14 @@ public class ActivityResource {
 
     @POST
     @ApiOperation(value = "Create activity",
+            response = Long.class,
             notes = "This can only be done by the logged in user.",
             position = 1)
+    @ApiResponse(code = 200, message = "returns the id of the activity")
     public Response createActivity(
             @ApiParam(value = "Created activity object", required = true) Activity activity) {
-        //Nothing
-        return Response.ok().entity("").build();
+        activity.setId(UUID.randomUUID().getMostSignificantBits());
+        StreamStorage.addActivity(activity);
+        return Response.ok().entity(activity.getId()).build();
     }
 }

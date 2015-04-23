@@ -1,6 +1,7 @@
 package org.exoplatform.bch;
 
 import com.wordnik.swagger.jersey.listing.ApiListingResourceJSON;
+import org.exoplatform.bch.stream.StreamResource;
 import org.exoplatform.bch.swagger.JacksonJsonProvider;
 import org.exoplatform.bch.activity.ActivityResource;
 
@@ -19,6 +20,7 @@ public class ExoRestApiApplication extends Application {
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new HashSet();
         resources.add(ActivityResource.class);
+        resources.add(StreamResource.class);
         resources.add(ApiListingResourceJSON.class);
         resources.add(JacksonJsonProvider.class);
         return resources;

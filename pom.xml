@@ -35,11 +35,6 @@
             <artifactId>swagger-jersey2-jaxrs</artifactId>
             <version>1.5.1-M2</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.wordnik</groupId>-->
-            <!--<artifactId>swagger-jaxrs</artifactId>-->
-            <!--<version>1.5.1-M2</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
@@ -68,6 +63,30 @@
             <groupId>com.squareup.retrofit</groupId>
             <artifactId>retrofit</artifactId>
             <version>1.9.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.concordion</groupId>-->
+            <!--<artifactId>concordion</artifactId>-->
+            <!--<version>1.4.7</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.spockframework</groupId>-->
+            <!--<artifactId>spock-core</artifactId>-->
+            <!--<version>1.0-groovy-2.4</version>-->
+            <!--<scope>test</scope>-->
+        <!--</dependency>-->
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>1.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>info.cukes</groupId>
+            <artifactId>cucumber-junit</artifactId>
+            <version>1.2.2</version>
             <scope>test</scope>
         </dependency>
 
