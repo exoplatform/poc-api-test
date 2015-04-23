@@ -7,8 +7,7 @@ mvn test
 ```
 
 ### Functional Tests
-Functional tests use Cucumber
-Example in activity.feature
+Functional tests use Cucumber (example in *activity.feature*)
 ```cucumber
 Feature: When an activity is created, it appears in the Activity Streams
 
