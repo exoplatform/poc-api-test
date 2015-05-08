@@ -4,6 +4,7 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.exoplatform.bch.activity.Activity;
+import org.exoplatform.bch.activity.client.retrofit.ApiRequestInterceptor;
 import org.exoplatform.bch.activity.client.retrofit.RestClient;
 import retrofit.RestAdapter;
 
@@ -16,13 +17,19 @@ import static org.junit.Assert.assertThat;
  * Created by bdechateauvieux on 4/23/15.
  */
 public class StepDefinitions {
+    private static final String USERNAME = null;
+    private static final String PASSWORD = null;
+
     private final RestClient activityClient;
     List<Activity> stream = null;
     private Long activityId;
 
     public StepDefinitions() {
+        ApiRequestInterceptor requestInterceptor = new ApiRequestInterceptor(USERNAME, PASSWORD);
+
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://localhost:8080")
+                .setRequestInterceptor(requestInterceptor)
                 .build();
         activityClient = restAdapter.create(RestClient.class);
     }
