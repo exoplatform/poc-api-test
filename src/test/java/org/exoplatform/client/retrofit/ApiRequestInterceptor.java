@@ -1,4 +1,4 @@
-package org.exoplatform.bch.activity.client.retrofit;
+package org.exoplatform.client.retrofit;
 
 /**
  * Created by bdechateauvieux on 5/5/15.
