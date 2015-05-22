@@ -19,6 +19,7 @@ import javax.ws.rs.core.UriBuilder;
 import java.net.URI;
 
 @RunWith(Cucumber.class)
+@CucumberOptions(features = "src/test/resources/org/exoplatform/fqa/calendar/calendar_calendar.feature")
 public class CalendarFuncTest {
 
 }

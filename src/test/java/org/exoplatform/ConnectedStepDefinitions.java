@@ -1,10 +1,12 @@
 package org.exoplatform;
 
+import cucumber.api.java.en.Then;
 import org.exoplatform.client.retrofit.RestClient;
 
 import org.exoplatform.client.retrofit.ApiRequestInterceptor;
 import org.exoplatform.bch.calendar.category.Category;
 
+import org.exoplatform.client.retrofit.User;
 import retrofit.RestAdapter;
 import retrofit.RestAdapter.LogLevel;
 
@@ -20,21 +22,22 @@ import static org.hamcrest.Matchers.hasProperty;
 /**
  * Created by bdechateauvieux on 4/23/15.
  */
-public class BaseStepDefinitions {
-    private static final String USERNAME = "john";
-    private static final String PASSWORD = "gtn";
+public class ConnectedStepDefinitions {
 
-    private final RestClient activityClient;
-    List<Category> categories = null;
-    public BaseStepDefinitions() {
-        ApiRequestInterceptor requestInterceptor = new ApiRequestInterceptor(USERNAME, PASSWORD);
+
+    protected RestClient getClient(User user){
+
+        ApiRequestInterceptor requestInterceptor = new ApiRequestInterceptor(user.getUserName(), user.getPassword());
 
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("http://localhost:8080")
                 .setRequestInterceptor(requestInterceptor)
                 .setLogLevel(LogLevel.FULL)
                 .build();
-        activityClient = restAdapter.create(RestClient.class);
+        return restAdapter.create(RestClient.class);
     }
 
+    protected RestClient getClient(){
+        return getClient(User.john);
+    }
 }
