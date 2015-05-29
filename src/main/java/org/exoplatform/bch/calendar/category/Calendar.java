@@ -9,12 +9,12 @@ public class Calendar {
     private String name;
     private String owner;
     private String type;
-    private String groups;
+    private String[] groups;
     private String timeZone;
     private String color;
     private String description;
     private String icsURL;
-    private String viewPermission;
+    private String viewPermision;
     private String publicUrl;
     private String privateUrl;
     private String editPermission;
@@ -35,11 +35,11 @@ public class Calendar {
         this.owner = owner;
     }
 
-    public String getGroups() {
+    public String[] getGroups() {
         return groups;
     }
 
-    public void setGroups(String groups) {
+    public void setGroups(String[] groups) {
         this.groups = groups;
     }
 
@@ -76,11 +76,11 @@ public class Calendar {
     }
 
     public String getViewPermission() {
-        return viewPermission;
+        return viewPermision;
     }
 
     public void setViewPermission(String viewPermission) {
-        this.viewPermission = viewPermission;
+        this.viewPermision = viewPermission;
     }
 
     public String getPublicUrl() {

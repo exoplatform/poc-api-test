@@ -1,65 +1,64 @@
 Feature: Calendar api
 
-    #Get
-
-    Scenario: I create a calendar with a different owner from the authentificated one, i can't see it
+    #----------------      Get      --------------------#
+    Scenario: Mary create a calendar. John connect and ask calendar. He can't see the mary's calendar
       Given As mary, I create a calendar with name "calMary"
-      When As john,  I get calendar
+      When As john, I get calendar
       Then Calendar named "calMary" is not show
-#      And As mary, I delete calendar named "calMary"
-#
-#    Scenario: I create a calendar with owner mary and groups /platform/administrators
-#      Given I log with "mary"
-#      Given I create a calendar with name "calMarygroups" with "Mary" as owner and groups "/platform/administrators".
-#      When I log with "john"
-#      When I get calendar
-#      Then Calendar named "calMarygroups" is show
-#      And I log with "mary"
-#      And I delete calendar named "calMarygroups"
-#
-#    Scenario:  I create a calendar with owner mary and give the right view to john
-#      Given I log with "mary"
-#      Given I create a calendar with name "calMaryShareView" with "mary" as owner and view permission for "john".
-#      And I log with "John"
-#      When I get calendar
-#      Then Calendar named "calMaryShareView" is show
-#      And I log with "mary"
-#      And I delete calendar named "calMaryShareView"
-#
-#   Scenario: I get a calendar by id
-#     Given I create a calendar with name "calId"
-#     When I search calendar by id "id"
-#     Then Calendar named "calId" is show
-#     And I delete calendar named "calId"
-#
-#   Scenario: I show the calendar by type ( query input )
-#    Given I create a calendar with name "calShareMary"
-#     Given I share calendar named "calShareMary" with user "mary"
-#     When I search calendar by type "<type>" i get calendar with name "<name>"
-#     Then I delete calendar named "calShareMary"
-#
-#   Examples:
-#   | type         | name |
-#   | personal     |  John Smith   |
-#   | group        |  Development   |
-#   | group        |  Administration   |
-#   | group        |  Users   |
-#   | group        |  Content Management   |
-#   | group        |  Executive Board   |
-#   | group        |  Employees   |
-#   | group        |  Executive Board   |
-#   | shared       |  calShareMary   |
-#
-#
-#     # TODO : Calendar ICS
-#
-#    #Post
-#
-#  Scenario: When i create 2 calendar with the same name i get back an error
-#    Given I create a calendar with name "titi"
-#    When I create a calendar with name "titi"
-#    Then I receive error : bad request, 400
-#
+      And As mary, I get calendar
+      And As mary, I delete calendar named "calMary"
+
+     # The calendar don't has user if no specified and no one has edit rights
+  @eXoApiError
+    Scenario: I create a calendar with mary and groups /platform/users
+       Given As mary, I create a calendar with name "calMarygroups" and groups "/platform/users".
+       When As john, I get calendar
+       Then Calendar named "calMarygroups" is show
+       And As mary, I get calendar
+       And As mary, I delete calendar named "calMarygroups"
+
+      # Jonh can't see the calendar. In request we can see that john is in view permision
+  @eXoApiError
+  Scenario:  I create a calendar with owner mary and give the right view to john
+        Given As mary, I create a calendar with name "calMaryShareView" and give view permission for "john" .
+        When As john, I get calendar
+        Then Calendar named "calMaryShareView" is show
+        And As mary, I get calendar
+        And As mary, I delete calendar named "calMaryShareView"
+
+
+    #error, json get is null
+  @eXoApiError
+   Scenario Outline: I show the calendar by type ( query input )
+     Given As john, I get calendar
+     Then Calendar type <type> with name <name> is show
+      Examples:
+        | type         | name |
+        | 0        |  John Smith   |
+        | 2        |  Development   |
+        | 2        |  Administration   |
+        | 2        |  Users   |
+        | 2        |  Content Management   |
+        | 2        |  Executive Board   |
+        | 2        |  Employees   |
+        | 2        |  Executive Board   |
+#        | shared       |  calShareMary   |
+
+
+     # TODO : Calendar ICS
+
+    #----------------      Post     --------------------#
+
+  # Two calendars with the same name are created
+  @eXoApiError
+  Scenario: When i create 2 calendar with the same name i get back an error
+    Given As john, I create a calendar with name "calJo"
+    When As john, I create a calendar with name "calJo"
+    Then I receive error : bad request, 400
+    When As john, I get calendar
+    And  As john, I delete calendar named "calJo"
+
+
 #  Scenario Outline: Create a calendar
 #    When I create a calendar with name "<title>"
 #    Then the HTTP status code of the response is <status>
@@ -69,12 +68,13 @@ Feature: Calendar api
 #      |  @#$@%$  ^&*& |  400   |
 #      |  ""''         |  400   |
 #      |               |  400   |
-#
-#  Scenario: Create a calendar with an other user name
-#    When I create a calendar with name "testCal" and user name different from owner
-#    Then I receive error : Unauthorized, 401
 
-#    Put
+
+  Scenario: Create a calendar with an other user name
+    When I create a calendar with name "testCal" and user name different from owner
+    Then I receive error : Unauthorized, 401
+
+  #----------------      Put     --------------------#
 #
 #  Scenario: John update his calendar
 #    Given I create a calendar with name "calToUp"
@@ -102,7 +102,7 @@ Feature: Calendar api
 #    Then The calendar named "calShareJohn" has description "Here its a true description"
 #    And I delete calendar named "calShareJohn"
 #
-#    #delete
+        #----------------      Delete     --------------------#
 #
 #  Scenario: John delete his calendar
 #    Given I create a calendar with name "calToDelete"
@@ -118,4 +118,20 @@ Feature: Calendar api
 #    Then I receive error : Unauthorized, 401
 #    Then I log with "mary"
 #    Then I delete calendar named "maryNotDelete"
+
+
+    Scenario:
+    Given I ask for ics
+
+
+  @Test
+  Scenario: Mary create a calendar and give edit right to John. John delete the calendar. He will not be able to see it
+    Given As mary, I create a calendar with name "shareJohn" and edit right for john
+    Given As john, I get calendar
+    Given Calendar named "shareJohn" is show
+    When As john, I delete calendar named "shareJohn"
+    Then As john, I get calendar
+    Then Calendar named "shareJohn" is not show
+    And As mary, I get calendar
+    And As mary, I delete calendar named "shareJohn"
 
