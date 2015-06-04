@@ -1,6 +1,6 @@
 package org.exoplatform.bch.calendar.category;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+
 
 public class Category {
     private String id;

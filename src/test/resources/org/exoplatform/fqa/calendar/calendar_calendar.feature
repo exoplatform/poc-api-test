@@ -1,6 +1,7 @@
 Feature: Calendar api
 
     #----------------      Get      --------------------#
+  @Test
     Scenario: Mary create a calendar. John connect and ask calendar. He can't see the mary's calendar
       Given As mary, I create a calendar with name "calMary"
       When As john, I get calendar
@@ -53,7 +54,7 @@ Feature: Calendar api
   @eXoApiError
   Scenario: When i create 2 calendar with the same name i get back an error
     Given As john, I create a calendar with name "calJo"
-    When As john, I create a calendar with name "calJo"
+    When As mary, I create a calendar with name "calJo"
     Then I receive error : bad request, 400
     When As john, I get calendar
     And  As john, I delete calendar named "calJo"
@@ -120,11 +121,7 @@ Feature: Calendar api
 #    Then I delete calendar named "maryNotDelete"
 
 
-    Scenario:
-    Given I ask for ics
 
-
-  @Test
   Scenario: Mary create a calendar and give edit right to John. John delete the calendar. He will not be able to see it
     Given As mary, I create a calendar with name "shareJohn" and edit right for john
     Given As john, I get calendar

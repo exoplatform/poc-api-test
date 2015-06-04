@@ -30,7 +30,7 @@ public class ConnectedStepDefinitions {
         ApiRequestInterceptor requestInterceptor = new ApiRequestInterceptor(user.getUserName(), user.getPassword());
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://192.168.1.53:8080")
+                .setEndpoint("http://192.168.1.83:8080")
                 .setRequestInterceptor(requestInterceptor)
                 .setLogLevel(LogLevel.FULL)
                 .build();

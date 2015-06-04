@@ -31,27 +31,16 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         getClient().createCalendar(monCal);
     }
 
-    @Then("^the HTTP status code of the response is (\\d+)$")
-    public void theHttpStatusCodeOfTheResponseIs(int statusCode) throws Throwable {
-        System.out.println("code erreur" + statusCode);
-    }
-
 
     @When("^I create a calendar with name \"(.*)\" and user name different from owner$")
     public void I_create_a_calendar_with_name_and_user_name_different_from_owner(String arg1) throws Throwable {
         Calendar monCal = new Calendar();
         monCal.setName(arg1);
         monCal.setOwner("mary");
-       Response hResponse= getClient().createCalendar(monCal);
+        Response hResponse= getClient().createCalendar(monCal);
         httpErrorStatus = hResponse.getStatus();
     }
 
-
-    @And("^The calendar \"(.*)\" is show")
-    public void The_calendar_exist(String leCal) throws Throwable {
-        //TODO Get the calendar by id and check if exist
-  //     assertTrue( activityClient.getCalendarSearchResult(leCal)!=null);
-    }
 
 
     @Given("^As ([^\"]*), I create a calendar with name \"([^\"]*)\"$")
@@ -108,7 +97,6 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
 
     @When("^Calendar type ([^\"]*) with name ([^\"]*) is show$")
     public void Calendar_type_type_with_name_name_is_show(String arg1, String arg2) throws Throwable {
-   //     assertThat(calendars, hasItem(hasProperty("type", equalTo(arg1))));
         assertThat(calendars, hasItems(hasProperty("type", equalTo(arg1)),hasProperty("name", equalTo(arg2))));
     }
 
@@ -120,11 +108,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         getClient(User.valueOf(user)).createCalendar(monCal);
     }
 
-    @Given("^I ask for ics$")
-    public void I_ask_for_ics() throws Throwable {
-        String idCal="calendar9eae9ac57f00010107f1dc1a1ad2b506";
-    getClient(User.mary).getIcs(idCal);
-    }
+
 
 
 //    Status
