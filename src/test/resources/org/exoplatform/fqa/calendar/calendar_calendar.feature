@@ -1,52 +1,50 @@
 Feature: Calendar api
 
     #----------------      Get      --------------------#
-  @Test
-    Scenario: Mary create a calendar. John connect and ask calendar. He can't see the mary's calendar
-      Given As mary, I create a calendar with name "calMary"
-      When As john, I get calendar
-      Then Calendar named "calMary" is not show
-      And As mary, I get calendar
-      And As mary, I delete calendar named "calMary"
+
+  Scenario: Mary create a calendar. John connect and ask calendar. He can't see the mary's calendar
+    Given As mary, I create a calendar with name "calMary"
+    When As john, I get calendar
+    Then Calendar named "calMary" is not show
+    And As mary, I get calendar
+    And As mary, I delete calendar named "calMary"
 
      # The calendar don't has user if no specified and no one has edit rights
   @eXoApiError
-    Scenario: I create a calendar with mary and groups /platform/users
-       Given As mary, I create a calendar with name "calMarygroups" and groups "/platform/users".
-       When As john, I get calendar
-       Then Calendar named "calMarygroups" is show
-       And As mary, I get calendar
-       And As mary, I delete calendar named "calMarygroups"
+  Scenario: I create a calendar with mary and groups /platform/users
+    Given As mary, I create a calendar with name "calMarygroups" and groups "/platform/users".
+    When As john, I get calendar
+    Then Calendar named "calMarygroups" is show
+    And As mary, I get calendar
+    And As mary, I delete calendar named "calMarygroups"
 
       # Jonh can't see the calendar. In request we can see that john is in view permision
   @eXoApiError
   Scenario:  I create a calendar with owner mary and give the right view to john
-        Given As mary, I create a calendar with name "calMaryShareView" and give view permission for "john" .
-        When As john, I get calendar
-        Then Calendar named "calMaryShareView" is show
-        And As mary, I get calendar
-        And As mary, I delete calendar named "calMaryShareView"
+    Given As mary, I create a calendar with name "calMaryShareView" and give view permission for "john" .
+    When As john, I get calendar
+    Then Calendar named "calMaryShareView" is show
+    And As mary, I get calendar
+    And As mary, I delete calendar named "calMaryShareView"
 
 
     #error, json get is null
   @eXoApiError
-   Scenario Outline: I show the calendar by type ( query input )
-     Given As john, I get calendar
-     Then Calendar type <type> with name <name> is show
-      Examples:
-        | type         | name |
-        | 0        |  John Smith   |
-        | 2        |  Development   |
-        | 2        |  Administration   |
-        | 2        |  Users   |
-        | 2        |  Content Management   |
-        | 2        |  Executive Board   |
-        | 2        |  Employees   |
-        | 2        |  Executive Board   |
+  Scenario Outline: I show the calendar by type ( query input )
+    Given As john, I get calendar
+    Then Calendar type <type> with name <name> is show
+    Examples:
+      | type         | name |
+      | 0        |  John Smith   |
+      | 2        |  Development   |
+      | 2        |  Administration   |
+      | 2        |  Users   |
+      | 2        |  Content Management   |
+      | 2        |  Executive Board   |
+      | 2        |  Employees   |
+      | 2        |  Executive Board   |
 #        | shared       |  calShareMary   |
 
-
-     # TODO : Calendar ICS
 
     #----------------      Post     --------------------#
 
@@ -76,14 +74,15 @@ Feature: Calendar api
     Then I receive error : Unauthorized, 401
 
   #----------------      Put     --------------------#
-#
-#  Scenario: John update his calendar
-#    Given I create a calendar with name "calToUp"
-#    When I edit the description of the calendar named "calToUp" to "Here its a true description"
-#    Then I get calendar
-#    And The description of the calendar named "calToUp" is "Here its a true description"
-#    And I delete calendar named "calToUp"
-#
+  @Test
+  Scenario:John update the description of the calendar.
+    Given As john, I create a calendar with name "calToUp"
+    Given As john, I get calendar
+    When As john, I edit the description of calendar "calToUp" for "my new description"
+    Then As john, I get calendar
+#    And The description of the calendar named "calToUp" is "my new description"
+#    And As john, I delete calendar named "calToUp"
+
 #  Scenario: John update the mary calendar but he doesn't have the edit rights
 #    Given I log with "mary"
 #    Given I create a calendar with name "calNotShare"
@@ -131,4 +130,3 @@ Feature: Calendar api
     Then Calendar named "shareJohn" is not show
     And As mary, I get calendar
     And As mary, I delete calendar named "shareJohn"
-

@@ -47,7 +47,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     public void As_mary_I_create_a_calendar_with_name(String user, String arg1) throws Throwable {
         Calendar monCal = new Calendar();
         monCal.setName(arg1);
-       Response hResponse= getClient(User.valueOf(user)).createCalendar(monCal);
+        Response hResponse= getClient(User.valueOf(user)).createCalendar(monCal);
         httpErrorStatus = hResponse.getStatus();
     }
 
@@ -108,7 +108,17 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         getClient(User.valueOf(user)).createCalendar(monCal);
     }
 
-
+    @When("^As ([^\"]*), I edit the description of calendar \"([^\"]*)\" for \"([^\"]*)\"$")
+    public void As_User_I_Edit_Description_Of_Calendar_for(String user, String arg1, String arg2){
+        String idOfcal="";
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                idOfcal = o.getId();
+        }
+        Calendar monCal = new Calendar();
+        monCal.setDescription(arg2);
+        getClient(User.valueOf(user)).editCalendar(idOfcal);
+    }
 
 
 //    Status
