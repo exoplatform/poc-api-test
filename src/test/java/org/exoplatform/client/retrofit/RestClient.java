@@ -19,6 +19,9 @@ public interface RestClient {
     @POST("/rest/private/v1/calendar/calendars/")
     Response createCalendar(@Body Calendar calendar);
 
+    @POST("/rest/private/v1/calendar/calendars/{name}")
+    Response editCalendar(@Path("name") String itemName);
+
     @DELETE("/rest/private/v1/calendar/calendars/{id}")
     Response deleteCalendar(@Path("id") String itemId);
 

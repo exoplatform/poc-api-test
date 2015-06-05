@@ -1,7 +1,6 @@
 Feature: Calendar api
 
     #----------------      Get      --------------------#
-  @Test
     Scenario: Mary create a calendar. John connect and ask calendar. He can't see the mary's calendar
       Given As mary, I create a calendar with name "calMary"
       When As john, I get calendar
@@ -18,7 +17,7 @@ Feature: Calendar api
        And As mary, I get calendar
        And As mary, I delete calendar named "calMarygroups"
 
-      # Jonh can't see the calendar. In request we can see that john is in view permision
+      # John can't see the calendar. In request we can see that john is in view permission
   @eXoApiError
   Scenario:  I create a calendar with owner mary and give the right view to john
         Given As mary, I create a calendar with name "calMaryShareView" and give view permission for "john" .
@@ -60,15 +59,15 @@ Feature: Calendar api
     And  As john, I delete calendar named "calJo"
 
 
-#  Scenario Outline: Create a calendar
-#    When I create a calendar with name "<title>"
-#    Then the HTTP status code of the response is <status>
-#    Examples:
-#      | title         | status |
-#      |  mon calendar |  201   |
-#      |  @#$@%$  ^&*& |  400   |
-#      |  ""''         |  400   |
-#      |               |  400   |
+  Scenario Outline: Create a calendar with differents chars for the name
+    When I create a calendar with name "<title>"
+    Then the HTTP status code of the response is <status>
+    Examples:
+      | title         | status |
+      |  mon calendar |  201   |
+      |  @#$@%$  ^&*& |  400   |
+      |  ""''         |  400   |
+      |               |  400   |
 
 
   Scenario: Create a calendar with an other user name
@@ -84,44 +83,48 @@ Feature: Calendar api
 #    And The description of the calendar named "calToUp" is "Here its a true description"
 #    And I delete calendar named "calToUp"
 #
-#  Scenario: John update the mary calendar but he doesn't have the edit rights
-#    Given I log with "mary"
-#    Given I create a calendar with name "calNotShare"
-#    And I log with "john"
-#    When I edit the description of the calendar named "calNotShare" to "Here its a true description"
-#    Then I receive error : Unauthorized, 401
-#    And I log with "mary"
-#    And I delete calendar named "calNotShare"
-#
-#  Scenario: John update the mary's calendar and he have the edit rights
-#    Given I log with "mary"
-#    Given I create a calendar with name "calShareJohn" and edit rights for "john"
-#    Given I log with "john"
-#    When I edit the description of the calendar named "calShareJohn" to "Here its a true description"
-#    Then I log with "mary"
-#    Then I get calendar
+
+
+   Scenario: John update the mary calendar but he doesn't have the edit rights
+    Given As mary, I create a calendar with name "CalNotShareJohn"
+    Given As john, I get calendar
+    When As john, I edit the description of the calendar named "calNotShareJohn" to "Here its a true description"
+    Then I receive error : Unauthorized, 401
+    Given As mary, I get calendar
+    Then As mary, I delete calendar named "calNotShareJohn"
+
+
+  @Test
+  Scenario: John update the mary's calendar and he have the edit rights
+    Given As mary, I create a calendar with name "CalShareJohn" and edit right for john
+    Given As john, I get calendar
+    When As john, I edit the description of the calendar named "calShareJohn" to "Here its a true description"
+    Then As mary, I get calendar
 #    Then The calendar named "calShareJohn" has description "Here its a true description"
 #    And I delete calendar named "calShareJohn"
-#
+
         #----------------      Delete     --------------------#
-#
-#  Scenario: John delete his calendar
-#    Given I create a calendar with name "calToDelete"
-#    When I delete calendar named "calToDelete"
-#    Then I get calendar
-#    And The calendar named "calToDelete" is not show
-#
-#  Scenario: John try to delete the mary's calendar without any rights
-#    Given I log with "mary"
-#    Given I create a calendar with name "maryNotDelete"
-#    Given I log with "john"
-#    When I delete calendar named "maryNotDelete"
-#    Then I receive error : Unauthorized, 401
-#    Then I log with "mary"
-#    Then I delete calendar named "maryNotDelete"
 
 
+  Scenario: John delete his calendar
+    Given As john, I create a calendar with name "calDelJohn21"
+    Given As john, I get calendar
+    When As john, I delete calendar named "calDelJohn21"
+    Then As john, I get calendar
+    Then Calendar named "calDelJohn21" is not show
 
+#    retrofit.RetrofitError: 405 Method Not Allowed instead of 401, bug API ?
+
+  Scenario: John try to delete the mary's calendar without any rights
+    Given As mary, I create a calendar with name "maryNotDelete"
+    Given As john, I get calendar
+    When As john, I delete calendar named "maryNotDelete"
+    Then I receive error : Unauthorized, 401
+    Given As mary, I get calendar
+    Then As mary, I delete calendar named "maryNotDelete"
+
+
+  @eXoApiError
   Scenario: Mary create a calendar and give edit right to John. John delete the calendar. He will not be able to see it
     Given As mary, I create a calendar with name "shareJohn" and edit right for john
     Given As john, I get calendar
