@@ -11,6 +11,7 @@ import org.exoplatform.client.retrofit.User;
 import retrofit.client.Response;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -27,10 +28,15 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     @When("^I create a calendar with name \"(.*)\"$")
     public void iPublishAnCategoryWithTitle(String name) throws Throwable {
         Calendar monCal = new Calendar();
+        Response hResponse=null;
         monCal.setName(name);
-        getClient().createCalendar(monCal);
+        try {
+            hResponse= getClient().createCalendar(monCal);
+            httpErrorStatus = hResponse.getStatus();
+        }catch (Exception e) {
+            System.out.println("marche pas");
+        }
     }
-
 
     @When("^I create a calendar with name \"(.*)\" and user name different from owner$")
     public void I_create_a_calendar_with_name_and_user_name_different_from_owner(String arg1) throws Throwable {
@@ -41,6 +47,12 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         httpErrorStatus = hResponse.getStatus();
     }
 
+
+    @And("^The calendar \"(.*)\" is show")
+    public void The_calendar_exist(String leCal) throws Throwable {
+        //TODO Get the calendar by id and check if exist
+  //     assertTrue( activityClient.getCalendarSearchResult(leCal)!=null);
+    }
 
 
     @Given("^As ([^\"]*), I create a calendar with name \"([^\"]*)\"$")
@@ -97,6 +109,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
 
     @When("^Calendar type ([^\"]*) with name ([^\"]*) is show$")
     public void Calendar_type_type_with_name_name_is_show(String arg1, String arg2) throws Throwable {
+   //     assertThat(calendars, hasItem(hasProperty("type", equalTo(arg1))));
         assertThat(calendars, hasItems(hasProperty("type", equalTo(arg1)),hasProperty("name", equalTo(arg2))));
     }
 
@@ -107,6 +120,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         monCal.setEditPermission(arg2);
         getClient(User.valueOf(user)).createCalendar(monCal);
     }
+
 
     @When("^As ([^\"]*), I edit the description of calendar \"([^\"]*)\" for \"([^\"]*)\"$")
     public void As_User_I_Edit_Description_Of_Calendar_for(String user, String arg1, String arg2){
@@ -121,6 +135,11 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     }
 
 
+
+    @When("^Calendar with name ([^\"]*) and description ([^\"]*) is show$")
+    public void Calendar_Description_show(String arg1, String arg2) throws Throwable {
+        assertThat(calendars, hasItems(hasProperty("name", equalTo(arg1)), hasProperty("description", equalTo(arg2))));
+    }
 //    Status
 
     @Then("^I receive error : bad request, 400$")
@@ -132,4 +151,10 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     public void returnMessageUnauthorized401(){
         assertThat(this.httpErrorStatus, is(401));
     }
+
+    @Then("^the HTTP status code of the response is ([^\"]*)$")
+    public void the_HTTP_status_code_of_the_response_is_status(int errCode) throws Throwable {
+        assertThat(this.httpErrorStatus, is(errCode));
+    }
+
 }

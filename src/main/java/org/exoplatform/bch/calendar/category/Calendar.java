@@ -139,4 +139,8 @@ public class Calendar {
     public void setName(String name) {
         this.name = name;
     }
+
+//    public void editName(String name) {
+//        this.name = name;
+//    }
 }
