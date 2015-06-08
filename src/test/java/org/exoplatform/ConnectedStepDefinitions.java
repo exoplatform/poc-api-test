@@ -1,6 +1,7 @@
 package org.exoplatform;
 
 import cucumber.api.java.en.Then;
+import org.exoplatform.client.retrofit.HttpRestClientException;
 import org.exoplatform.client.retrofit.RestClient;
 
 import org.exoplatform.client.retrofit.ApiRequestInterceptor;
@@ -30,9 +31,10 @@ public class ConnectedStepDefinitions {
         ApiRequestInterceptor requestInterceptor = new ApiRequestInterceptor(user.getUserName(), user.getPassword());
 
         RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("http://localhost:8080")
+                .setEndpoint("http://192.168.1.42:8080")
                 .setRequestInterceptor(requestInterceptor)
                 .setLogLevel(LogLevel.FULL)
+                .setErrorHandler(cause -> new HttpRestClientException(cause.getResponse().getStatus()))
                 .build();
         return restAdapter.create(RestClient.class);
     }

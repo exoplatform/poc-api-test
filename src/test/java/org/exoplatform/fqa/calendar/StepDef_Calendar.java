@@ -7,6 +7,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.exoplatform.ConnectedStepDefinitions;
 import org.exoplatform.bch.calendar.category.Calendar;
+import org.exoplatform.client.retrofit.HttpRestClientException;
 import org.exoplatform.client.retrofit.User;
 import retrofit.client.Response;
 
@@ -48,13 +49,6 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     }
 
 
-    @And("^The calendar \"(.*)\" is show")
-    public void The_calendar_exist(String leCal) throws Throwable {
-        //TODO Get the calendar by id and check if exist
-  //     assertTrue( activityClient.getCalendarSearchResult(leCal)!=null);
-    }
-
-
     @Given("^As ([^\"]*), I create a calendar with name \"([^\"]*)\"$")
     public void As_mary_I_create_a_calendar_with_name(String user, String arg1) throws Throwable {
         Calendar monCal = new Calendar();
@@ -81,7 +75,13 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
             if (o.getName().equals(arg1))
                 idOfcal = o.getId();
         }
-        getClient(User.valueOf(user)).deleteCalendar(idOfcal);
+        try{
+         Response response = getClient(User.valueOf(user)).deleteCalendar(idOfcal);
+         httpErrorStatus=response.getStatus();
+        }catch (HttpRestClientException e){
+            httpErrorStatus=e.getStatus();
+        }
+
     }
 
     @Given("^As ([^\"]*), I create a calendar with name \"([^\"]*)\" and groups \"([^\"]*)\".$")
@@ -109,7 +109,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
 
     @When("^Calendar type ([^\"]*) with name ([^\"]*) is show$")
     public void Calendar_type_type_with_name_name_is_show(String arg1, String arg2) throws Throwable {
-   //     assertThat(calendars, hasItem(hasProperty("type", equalTo(arg1))));
+
         assertThat(calendars, hasItems(hasProperty("type", equalTo(arg1)),hasProperty("name", equalTo(arg2))));
     }
 
@@ -124,14 +124,20 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
 
     @When("^As ([^\"]*), I edit the description of calendar \"([^\"]*)\" for \"([^\"]*)\"$")
     public void As_User_I_Edit_Description_Of_Calendar_for(String user, String arg1, String arg2){
-        String idOfcal="";
+        Calendar monCal = new Calendar();
+        Response response;
         for(Calendar o: calendars) {
             if (o.getName().equals(arg1))
-                idOfcal = o.getId();
+                monCal=o;
         }
-        Calendar monCal = new Calendar();
         monCal.setDescription(arg2);
-        getClient(User.valueOf(user)).editCalendar(idOfcal);
+        try{
+           response= getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+            httpErrorStatus=response.getStatus();
+        }catch (HttpRestClientException e){
+            httpErrorStatus=e.getStatus();
+        }
+
     }
 
 
@@ -140,7 +146,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     public void Calendar_Description_show(String arg1, String arg2) throws Throwable {
         assertThat(calendars, hasItems(hasProperty("name", equalTo(arg1)), hasProperty("description", equalTo(arg2))));
     }
-//    Status
+
 
     @Then("^I receive error : bad request, 400$")
     public void returnMessageBadRequest400(){
@@ -157,4 +163,100 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         assertThat(this.httpErrorStatus, is(errCode));
     }
 
+    @When("^As ([^\"]*), I edit the id of calendar named \"([^\"]*)\" for \"([^\"]*)\"$")
+    public void As_john_I_edit_the_id_of_calendar_for(String user,String arg1, String arg2) throws Throwable {
+        Calendar monCal = new Calendar();
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                monCal=o;
+        }
+        monCal.setId(arg2);
+        getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+
+    }
+
+    @Then("^The calendar \"([^\"]*)\" has not the id \"([^\"]*)\"$")
+    public void The_calendar_has_not_the_id(String arg1, String arg2) throws Throwable {
+        assertThat(calendars, hasItems(hasProperty("name", equalTo(arg1)), hasProperty("id", equalTo(arg2))));
+
+    }
+
+
+    @Then("^As ([^\"]*), I edit all fields for calendar named \"([^\"]*)\" : name \"([^\"]*)\", description \"([^\"]*)\", color \"([^\"]*)\", groups \"([^\"]*)\", timezone \"([^\"]*)\", editPermission \"([^\"]*)\", viewPermission \"([^\"]*)\"$")
+    public void As_john_I_edit_all_fields_for_name_description_color_groups_timezone_editPermission_viewPermission(String user,String arg0,String arg1, String arg2, String arg3, String arg4, String arg5, String arg6,String arg7) throws Throwable {
+        Calendar monCal = new Calendar();
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg0))
+                monCal=o;
+        }
+        String[] groupArray = new String[1];
+        groupArray[0] = arg4;
+        monCal.setName(arg1);
+        monCal.setDescription(arg2);
+        monCal.setColor(arg3);
+        monCal.setGroups(groupArray);
+        monCal.setTimeZone(arg5);
+        monCal.setEditPermission(arg6);
+        monCal.setViewPermission(arg7);
+        getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+    }
+
+    @Then("^The description of the calendar named \"([^\"]*)\" is \"([^\"]*)\"$")
+    public void The_description_of_the_calendar_named_is(String arg1, String arg2) throws Throwable {
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                assertThat(calendars, hasItem(hasProperty("description", equalTo(arg2))));
+        }
+    }
+
+    @Then("^The color of the calendar named \"([^\"]*)\" is \"([^\"]*)\"$")
+    public void The_color_of_the_calendar_named_is(String arg1, String arg2) throws Throwable {
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                assertThat(calendars, hasItem(hasProperty("color", equalTo(arg2))));
+        }
+    }
+
+    @Then("^The groups of the calendar named \"([^\"]*)\" is \"([^\"]*)\"$")
+    public void The_groups_of_the_calendar_named_is(String arg1, String arg2) throws Throwable {
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                assertThat(calendars, hasItem(hasProperty("groups", equalTo(arg2))));
+        }
+    }
+
+    @Then("^The timezone of the calendar named \"([^\"]*)\" is \"([^\"]*)\"$")
+    public void The_timezone_of_the_calendar_named_is(String arg1, String arg2) throws Throwable {
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                assertThat(calendars, hasItem(hasProperty("timezone", equalTo(arg2))));
+        }
+    }
+
+    @Then("^The editPermission of the calendar named \"([^\"]*)\" contains \"([^\"]*)\"$")
+    public void The_editPermission_of_the_calendar_named_contains(String arg1, String arg2) throws Throwable {
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                assertThat(calendars, hasItem(hasProperty("editPermission", equalTo(arg2))));
+        }
+    }
+
+    @Then("^The viewPermission of the calendar named \"([^\"]*)\" contains \"([^\"]*)\"$")
+    public void The_viewPermission_of_the_calendar_named_contains(String arg1, String arg2) throws Throwable {
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                assertThat(calendars, hasItem(hasProperty("viewPermission", equalTo(arg2))));
+        }
+    }
+
+    @When("^As ([^\"]*), I edit field owner for calendar name \"([^\"]*)\" to \"([^\"]*)\"$")
+    public void As_john_I_edit_field_owner_for_calendar_name_to(String user,String arg1, String arg2) throws Throwable {
+        Calendar monCal = new Calendar();
+        for(Calendar o: calendars) {
+            if (o.getName().equals(arg1))
+                monCal=o;
+        }
+        monCal.setOwner(arg2);
+        getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+    }
 }

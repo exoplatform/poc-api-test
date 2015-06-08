@@ -20,7 +20,7 @@ public interface RestClient {
     Response createCalendar(@Body Calendar calendar);
 
     @PUT("/rest/private/v1/calendar/calendars/{id}")
-    Response editCalendar(@Path("id") String itemId);
+    Response editCalendar(@Path("id") String itemId,@Body Calendar calendar);
 
 
     @DELETE("/rest/private/v1/calendar/calendars/{id}")
