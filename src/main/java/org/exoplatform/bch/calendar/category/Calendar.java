@@ -14,7 +14,7 @@ public class Calendar {
     private String color;
     private String description;
     private String icsURL;
-    private String viewPermission;
+    private String viewPermision;
     private String publicUrl;
     private String privateUrl;
     private String editPermission;
@@ -76,11 +76,11 @@ public class Calendar {
     }
 
     public String getViewPermission() {
-        return viewPermission;
+        return viewPermision;
     }
 
-    public void setViewPermission(String viewPermission) {
-        this.viewPermission = viewPermission;
+    public void setViewPermission(String viewPermision) {
+        this.viewPermision = viewPermision;
     }
 
     public String getPublicUrl() {

@@ -44,8 +44,13 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         Calendar monCal = new Calendar();
         monCal.setName(arg1);
         monCal.setOwner("mary");
-        Response hResponse= getClient().createCalendar(monCal);
-        httpErrorStatus = hResponse.getStatus();
+        try {
+            Response hResponse= getClient().createCalendar(monCal);
+            httpErrorStatus = hResponse.getStatus();
+        }catch (HttpRestClientException e) {
+            httpErrorStatus=e.getStatus();
+        }
+
     }
 
 
@@ -113,11 +118,12 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
         assertThat(calendars, hasItems(hasProperty("type", equalTo(arg1)),hasProperty("name", equalTo(arg2))));
     }
 
-    @Given("^As ([^\"]*), I create a calendar with name \"([^\"]*)\" and edit right for ([^\"]*)")
+    @Given("^As ([^\"]*), I create a calendar with name \"([^\"]*)\" and edit/view permission for ([^\"]*)")
     public void As_mary_I_create_a_calendar_with_name_and_edit_right_for_john(String user, String arg1,String arg2) throws Throwable {
         Calendar monCal = new Calendar();
         monCal.setName(arg1);
         monCal.setEditPermission(arg2);
+        monCal.setViewPermission(arg2);
         getClient(User.valueOf(user)).createCalendar(monCal);
     }
 
@@ -171,13 +177,19 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
                 monCal=o;
         }
         monCal.setId(arg2);
-        getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+        try{
+        Response response = getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+            httpErrorStatus=response.getStatus();
+        }catch (HttpRestClientException e){
+        httpErrorStatus=e.getStatus();
+        }
+
 
     }
 
     @Then("^The calendar \"([^\"]*)\" has not the id \"([^\"]*)\"$")
     public void The_calendar_has_not_the_id(String arg1, String arg2) throws Throwable {
-        assertThat(calendars, hasItems(hasProperty("name", equalTo(arg1)), hasProperty("id", equalTo(arg2))));
+        assertThat(calendars, not(hasItems(hasProperty("name", equalTo(arg1)), hasProperty("id", equalTo(arg2)))));
 
     }
 
@@ -229,7 +241,7 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
     public void The_timezone_of_the_calendar_named_is(String arg1, String arg2) throws Throwable {
         for(Calendar o: calendars) {
             if (o.getName().equals(arg1))
-                assertThat(calendars, hasItem(hasProperty("timezone", equalTo(arg2))));
+                assertThat(calendars, hasItem(hasProperty("timeZone", equalTo(arg2))));
         }
     }
 
@@ -257,6 +269,33 @@ public class StepDef_Calendar extends ConnectedStepDefinitions {
                 monCal=o;
         }
         monCal.setOwner(arg2);
-        getClient(User.valueOf(user)).editCalendar(monCal.getId(),monCal);
+        try{
+            Response response= getClient(User.valueOf(user)).editCalendar(monCal.getId(), monCal);
+            httpErrorStatus=response.getStatus();
+        }catch (HttpRestClientException e){
+            httpErrorStatus=e.getStatus();
+        }
+    }
+
+
+    @Given("^As ([^\"]*), I create a calendar with thoses fields fill : name \"([^\"]*)\", description \"([^\"]*)\", color \"([^\"]*)\", groups \"([^\"]*)\", timezone \"([^\"]*)\", editPermission \"([^\"]*)\", viewPermission \"([^\"]*)\"$")
+    public void As_john_I_create_a_calendar_with_thoses_fields_fill_name_description_color_groups_timezone_editPermission_viewPermission(String user,String arg1, String arg2, String arg3, String arg4, String arg5, String arg6, String arg7) throws Throwable {
+        Calendar monCal = new Calendar();
+        monCal.setName(arg1);
+        monCal.setDescription(arg2);
+        monCal.setColor(arg3);
+        String[] groupArray = new String[1];
+        groupArray[0] = arg4;
+        monCal.setGroups(groupArray);
+        monCal.setTimeZone(arg5);
+        monCal.setEditPermission(arg6);
+        monCal.setViewPermission(arg7);
+        monCal.setOwner(user);
+        try{
+            Response response= getClient(User.valueOf(user)).createCalendar(monCal);
+            httpErrorStatus=response.getStatus();
+        }catch (HttpRestClientException e){
+            httpErrorStatus=e.getStatus();
+        }
     }
 }
